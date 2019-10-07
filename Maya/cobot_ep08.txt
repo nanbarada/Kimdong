@@ -1,0 +1,1103 @@
+
+
+     
+Rootwin();
+global proc Rootwin(){
+ string $Swindow = "rcwin";
+ if (`window -exists $Swindow`) {
+     deleteUI -window $Swindow;
+     }
+$RootRC = `window -title "Cobot Remocon v009" -iconName "RC" -sizeable 1 -menuBar 1 -widthHeight 235 500 rcwin`;
+	menu -label "Select Project" -allowOptionBoxes true;
+		menuItem -label "melong1";
+		menuItem -label "melong2";
+		menuItem -label "melong3";
+	setParent ..; 
+
+	menu -label "Option";
+		menuItem -label "Preference";
+		menuItem -label "Initial Setting";
+	setParent ..; 
+
+	menu -label "Help";
+		menuItem -label "About";
+	setParent ..; 
+
+// button commands //
+// "resoultion_low", "resoultion_medium", "resoultion_high"
+//
+	string $form = `formLayout`; 
+	string $tabs = `tabLayout -innerMarginWidth 8 -innerMarginHeight 8`;
+	formLayout -edit
+		-attachForm $tabs "top"	0
+		-attachForm $tabs "left"	0
+		-attachForm $tabs "bottom"	0
+		-attachForm $tabs "right"	0
+		$form;
+		
+		string $child1 = `columnLayout`;
+						rowColumnLayout;
+							textFieldGrp -text "                         render Preset" -editable 0 ;
+						setParent ..;
+						rowColumnLayout;
+							button -width 230 -bgc 0.6 0.6 0.9-label "Renderer to Vray" -c "toVray";	
+							button -width 230 -bgc 0.4 0.6 0.9-label "render set leoroom" -c "allinone_leoroom";
+							button -width 230 -bgc 0.4 0.5 0.9-label "render set codingcastle" -c "allinone_codingcastle";
+							button -width 230 -bgc 0.4 0.4 0.9-label "render set cuberoom" -c "allinone_cuberoom";
+							button -width 230 -bgc 0.4 0.4 0.9-label "render set white cuberoom" -c "allinone_whitecuberoom";
+						setParent ..;
+						rowColumnLayout;
+						    textFieldGrp -text "                             Layer" -editable 0 ;
+						setParent ..;
+						rowColumnLayout;
+							button -width 230 -bgc 0.8 0.7 0.9-label "loeroomLayer" -c "loeroomLayer";
+							button -width 230 -bgc 0.7 0.7 0.9-label "Layer" -c "Layer";
+							button -width 230 -bgc 0.6 0.7 0.9-label "white cuberoom Layer" -c "whitecuberoomLayer";
+						setParent ..;
+						rowColumnLayout -nc 2;	
+							button -width 115 -bgc 0.6 0.4 0.3-label "Object ADD" -c "ADDO";
+							button -width 115 -bgc 0.7 0.3 0.9-label "Object BG" -c "BGO";
+							button -width 115 -bgc 0.6 0.3 0.9-label "Object matte" -c "Matteo";
+							button -width 115 -bgc 0.5 0.5 0.8-label "Object RL" -c "RLO";
+							button -width 115 -bgc 0.4 0.7 0.8-label "Object SCREEN" -c "SCO";
+							button -width 115 -bgc 0.3 0.7 0.7-label "Object SCREEN_light" -c "SCLO";
+						setParent ..;
+						textFieldGrp -text "                    File Naming & Path" -editable 0 ;
+						rowColumnLayout -nc 7;
+							text -width 35 -label " Ep";
+							textField -width 35 -tx "08" "Ep"; 
+							text -width 24 -label " cut";
+							textField -width 35 "Cut";
+							text -width 15 "";
+							button -width 40 -label "prefix" -c "Prefix";
+						setParent ..;
+					    rowLayout -nc 7;
+							text -width 33 -label " start"; 
+							textField -width 35 -tx "101" "_SF_num"; 
+							text -width 20 -label " end"; 
+							textField -width 35 "_EF_num";
+							text -width 11 "";
+							button -label "SET" -w 40 -c "setRange";
+							button -label "IMP" -w 40 -c "Import";
+						 setParent ..;
+						rowColumnLayout;
+							textFieldGrp -text "                 V-ray Properties " -editable 0 ;
+							button -width 230 -label "Create V-ray Properties" -c "makeVopp" ;
+							button -width 230 -label "Create Custom Object ID for FLoor" -c "makeFloorID" ;
+						setParent ..;
+						    textFieldGrp -text "                 Show N Select " -editable 0 ;
+						 //frameLayout -label "Show N Select Mode" -collapsable true -borderStyle "etchedIn";//-collapse true
+                            columnLayout -columnAttach "both" 80 -rowSpacing 1 -columnWidth 290;
+                            $c4 = `checkBox -label "polygon" -v 1 -onCommand "selPolyon" -offCommand "selPolyoff"`;
+                         setParent ..;
+                            gridLayout -numberOfColumns 5 -cellWidthHeight 45 35; 
+                            button  -label "Clean" -command "showOnlyMode"; 
+                            $c1 = `checkBox -label "loc" -onCommand "lokater_on_func" -offCommand "locater_off_func"`;
+                            $c2 = `checkBox -label "cam" -onCommand "camera_on_func" -offCommand "camera_off_func"`;
+                            $c3 = `checkBox -label "cur" -onCommand "curve_on_func" -offCommand "curve_off_func"`;
+                            button  -label "All" -command "showALlMode"; 
+                         setParent ..;
+						    textFieldGrp -text "                  Matte_Shading" -editable 0 ;
+						//frameLayout -label "Matte_Shading" -collapsable true -borderStyle "etchedIn" ;
+							rowColumnLayout;
+							button -label "Create_Matte_Shader" -c "MakeMTS" ;
+							gridLayout -
+							numberOfColumns 4 -cellWidthHeight 55 40;
+							button -bgc 1 0.1 0.1 -label "R" -c "sets -e -forceElement matte_RSG" ;
+							button -bgc 0.1 1 0.1 -label "G" -c "sets -e -forceElement matte_GSG" ;
+							button -bgc 0.1 0.1 1 -label "B" -c "sets -e -forceElement matte_BSG" ;
+							button -bgc 0.1 0.1 0.1 -label "Black" -c "sets -e -forceElement matte_BlackHoleSG" ;
+						setParent ..;
+					setParent..;
+				setParent..;
+		
+		tabLayout -edit	
+			-tabLabel $child1 "Remocon" 
+			$tabs;
+showWindow;
+}
+
+global proc toVray()
+{
+setAttr "defaultRenderGlobals.currentRenderer" -type "string" "vray";
+}
+
+global proc allinone_leoroom()
+{
+
+setAttr "vraySettings.imageFormatStr" -type "string" "exr";
+setAttr "vraySettings.width" 1440;
+setAttr "vraySettings.height" 810;
+
+setAttr "vraySettings.animType" 1;
+setAttr "vraySettings.animBatchOnly" 1;
+setAttr "defaultRenderGlobals.startFrame" 101;
+setAttr "defaultRenderGlobals.endFrame" 101;
+
+// Sampler adaptive
+
+setAttr "vraySettings.globopt_render_viewport_subdivision" 1;
+setAttr "vraySettings.globopt_light_doDefaultLights" 0;
+setAttr "vraySettings.globopt_ray_maxIntens_on" 0;
+setAttr "vraySettings.samplerType" 1;
+setAttr "vraySettings.aaFilterType" 3; 
+setAttr "vraySettings.aaFilterSize" 2.5;
+setAttr "vraySettings.minShadeRate" 1; 
+setAttr "vraySettings.dmcMinSubdivs" 2;
+setAttr "vraySettings.dmcMaxSubdivs" 5;
+setAttr "vraySettings.dmcThreshold" 0.008;
+
+// filterMaps on
+
+setAttr "vraySettings.globopt_mtl_filterMaps" 1; 
+
+// DMC sampler animated Noise Pattern
+
+setAttr "vraySettings.dmcs_timeDependent" 0; // Animated noise pattern off
+setAttr "vraySettings.dmcs_adaptiveThreshold" 0.008; 
+
+//Environment
+setAttr "vraySettings.cam_envtexGi" -type double3 1.2 1.2 1.2 ;
+
+// GI
+setAttr "vraySettings.giOn" 0; // GI off
+
+// Environment
+setAttr "vraySettings.cam_overrideEnvtex" 1; // GI override on
+setAttr "vraySettings.cam_envtexGi" -type double3 1.2 1.2 1.2 ; // GI texture ??/ 0 / 1.2
+
+// color mapping
+setAttr "vraySettings.cmap_adaptationOnly" 0;
+setAttr "vraySettings.cmap_type" 0; //color mode Linear
+setAttr "vraySettings.cmap_clampOutput" 0; // off
+
+setAttr "vraySettings.cmap_subpixelMapping" 1;
+setAttr "vraySettings.cmap_linearworkflow" 1; // on
+
+
+// Displacement
+setAttr "vraySettings.ddisplac_maxSubdivs" 4;
+setAttr "vraySettings.sys_regsgen_xc" 48;
+
+// System
+setAttr "vraySettings.sys_rayc_dynMemLimit" 15000; // dynamic 15000;
+setAttr "vraySettings.sys_embreeUse" 1; // use Embree on
+setAttr "vraySettings.sys_rayc_faceLevelCoef" 2;
+
+// etc
+
+setAttr "vraySettings.relements_separateFolders" 1;
+setAttr "vraySettings.relements_enableall" 0;
+setAttr "vraySettings.relements_separateFolders" 1;
+
+//vrayAddRenderElement diffuseChannel;
+vrayAddRenderElement ExtraTexElement;
+//vrayAddRenderElement giChannel;
+//vrayAddRenderElement lightingChannel;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement reflectChannel;
+//vrayAddRenderElement specularChannel;
+vrayAddRenderElement zdepthChannel;
+setAttr "vraySettings.relements_enableall" 0;
+}
+
+
+
+global proc allinone_codingcastle()
+{
+
+setAttr "vraySettings.imageFormatStr" -type "string" "exr";
+setAttr "vraySettings.width" 1440;
+setAttr "vraySettings.height" 810;
+
+setAttr "vraySettings.animType" 1;
+setAttr "vraySettings.animBatchOnly" 1;
+setAttr "defaultRenderGlobals.startFrame" 101;
+setAttr "defaultRenderGlobals.endFrame" 101;
+
+// Sampler adaptive
+
+setAttr "vraySettings.globopt_geom_displacement" 1;
+setAttr "vraySettings.globopt_render_viewport_subdivision" 1;
+setAttr "vraySettings.globopt_light_doDefaultLights" 0;
+setAttr "vraySettings.globopt_ray_maxIntens_on" 0;
+setAttr "vraySettings.samplerType" 1;
+setAttr "vraySettings.aaFilterType" 3; 
+setAttr "vraySettings.aaFilterSize" 2.5;
+setAttr "vraySettings.minShadeRate" 1; 
+setAttr "vraySettings.dmcMinSubdivs" 1;
+setAttr "vraySettings.dmcMaxSubdivs" 5;
+setAttr "vraySettings.dmcThreshold" 0.008;
+
+// filterMaps on
+
+setAttr "vraySettings.globopt_mtl_filterMaps" 1; 
+
+// DMC sampler animated Noise Pattern
+
+setAttr "vraySettings.dmcs_timeDependent" 0; // Animated noise pattern off
+setAttr "vraySettings.dmcs_adaptiveThreshold" 0.008; 
+
+//Environment
+//setAttr "vraySettings.cam_envtexGi" -type double3 1.2 1.2 1.2 ;
+
+// GI
+setAttr "vraySettings.giOn" 0; // GI off
+
+// Environment
+setAttr "vraySettings.cam_overrideEnvtex" 1; // GI override on
+setAttr "vraySettings.cam_envtexGi" -type double3 1.2 1.2 1.2 ;
+setAttr "vraySettings.cam_envtexGi" -type double3 0.96 1.08 1.2 ;
+setAttr "vraySettings.cam_envtexGi" -type double3 0.48 0.54 0.6 ; // GI texture 
+
+// color mapping
+setAttr "vraySettings.cmap_adaptationOnly" 0;
+setAttr "vraySettings.cmap_type" 0; //color mode Linear
+setAttr "vraySettings.cmap_clampOutput" 0; // off
+
+setAttr "vraySettings.cmap_subpixelMapping" 1;
+setAttr "vraySettings.cmap_linearworkflow" 1; // on
+
+
+// Displacement
+setAttr "vraySettings.ddisplac_maxSubdivs" 4;
+setAttr "vraySettings.sys_regsgen_xc" 48;
+
+// System
+setAttr "vraySettings.sys_rayc_dynMemLimit" 15000; // dynamic 15000;
+setAttr "vraySettings.sys_embreeUse" 1; // use Embree on
+setAttr "vraySettings.sys_rayc_faceLevelCoef" 2;
+
+// etc
+
+setAttr "vraySettings.relements_separateFolders" 1;
+setAttr "vraySettings.relements_enableall" 0;
+setAttr "vraySettings.relements_separateFolders" 1;
+
+//vrayAddRenderElement diffuseChannel;
+vrayAddRenderElement ExtraTexElement;
+vrayAddRenderElement ExtraTexElement;
+//vrayAddRenderElement giChannel;
+//vrayAddRenderElement lightingChannel;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+//vrayAddRenderElement reflectChannel;
+//vrayAddRenderElement specularChannel;
+vrayAddRenderElement zdepthChannel;
+//vrayAddRenderElement LightSelectElement;
+//vrayAddRenderElement LightSelectElement;  
+setAttr "vraySettings.relements_enableall" 0;
+}
+
+
+global proc allinone_cuberoom()
+{
+
+setAttr "vraySettings.imageFormatStr" -type "string" "exr";
+setAttr "vraySettings.width" 1440;
+setAttr "vraySettings.height" 810;
+
+setAttr "vraySettings.animType" 1;
+setAttr "vraySettings.animBatchOnly" 1;
+setAttr "defaultRenderGlobals.startFrame" 101;
+setAttr "defaultRenderGlobals.endFrame" 101;
+
+// Sampler adaptive
+
+setAttr "vraySettings.globopt_render_viewport_subdivision" 1;
+setAttr "vraySettings.globopt_light_doDefaultLights" 0;
+setAttr "vraySettings.globopt_ray_maxIntens_on" 0;
+setAttr "vraySettings.samplerType" 1;
+setAttr "vraySettings.aaFilterType" 3; 
+setAttr "vraySettings.aaFilterSize" 2.5;
+setAttr "vraySettings.minShadeRate" 1; 
+setAttr "vraySettings.dmcMinSubdivs" 2;
+setAttr "vraySettings.dmcMaxSubdivs" 5;
+setAttr "vraySettings.dmcThreshold" 0.008;
+
+// filterMaps on
+
+setAttr "vraySettings.globopt_mtl_filterMaps" 1; 
+
+// DMC sampler animated Noise Pattern
+
+setAttr "vraySettings.dmcs_timeDependent" 0; // Animated noise pattern off
+setAttr "vraySettings.dmcs_adaptiveThreshold" 0.008; 
+
+//Environment
+//setAttr "vraySettings.cam_envtexGi" -type double3 1.2 1.2 1.2 ;
+
+// GI
+setAttr "vraySettings.giOn" 0; // GI off
+
+// Environment
+setAttr "vraySettings.cam_overrideEnvtex" 1; // GI override on
+setAttr "vraySettings.cam_envtexGi" -type double3 1.2 1.2 1.2 ;
+setAttr "vraySettings.cam_envtexGi" -type double3 0.96 1.08 1.2 ;
+setAttr "vraySettings.cam_envtexGi" -type double3 0.48 0.54 0.6 ; // GI texture 
+
+// color mapping
+setAttr "vraySettings.cmap_adaptationOnly" 0;
+setAttr "vraySettings.cmap_type" 0; //color mode Linear
+setAttr "vraySettings.cmap_clampOutput" 0; // off
+
+setAttr "vraySettings.cmap_subpixelMapping" 1;
+setAttr "vraySettings.cmap_linearworkflow" 1; // on
+
+
+// Displacement
+setAttr "vraySettings.ddisplac_maxSubdivs" 4;
+setAttr "vraySettings.sys_regsgen_xc" 48;
+
+// System
+setAttr "vraySettings.sys_rayc_dynMemLimit" 15000; // dynamic 15000;
+setAttr "vraySettings.sys_embreeUse" 1; // use Embree on
+setAttr "vraySettings.sys_rayc_faceLevelCoef" 2;
+setAttr "vraySettings.sys_distributed_rendering_on" 1;
+
+// etc
+
+setAttr "vraySettings.relements_separateFolders" 1;
+setAttr "vraySettings.relements_enableall" 0;
+setAttr "vraySettings.relements_separateFolders" 1;
+setAttr "vraySettings.sys_distributed_rendering_local" 1;
+
+vrayAddRenderElement diffuseChannel;
+vrayAddRenderElement ExtraTexElement;
+vrayAddRenderElement ExtraTexElement;
+//vrayAddRenderElement giChannel;
+//vrayAddRenderElement lightingChannel;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement reflectChannel;
+//vrayAddRenderElement specularChannel;
+vrayAddRenderElement zdepthChannel;
+vrayAddRenderElement LightSelectElement; 
+setAttr "vraySettings.relements_enableall" 0;
+}
+
+
+
+
+
+global proc allinone_whitecuberoom()
+{
+
+setAttr "vraySettings.imageFormatStr" -type "string" "exr";
+setAttr "vraySettings.width" 1440;
+setAttr "vraySettings.height" 810;
+
+setAttr "vraySettings.animType" 1;
+setAttr "vraySettings.animBatchOnly" 1;
+setAttr "defaultRenderGlobals.startFrame" 101;
+setAttr "defaultRenderGlobals.endFrame" 101;
+
+// Sampler adaptive
+
+setAttr "vraySettings.globopt_render_viewport_subdivision" 1;
+setAttr "vraySettings.globopt_light_doDefaultLights" 0;
+setAttr "vraySettings.globopt_ray_maxIntens_on" 0;
+setAttr "vraySettings.samplerType" 1;
+setAttr "vraySettings.aaFilterType" 3; 
+setAttr "vraySettings.aaFilterSize" 2.5;
+setAttr "vraySettings.minShadeRate" 1; 
+setAttr "vraySettings.dmcMinSubdivs" 2;
+setAttr "vraySettings.dmcMaxSubdivs" 5;
+setAttr "vraySettings.dmcThreshold" 0.008;
+
+// filterMaps on
+
+setAttr "vraySettings.globopt_mtl_filterMaps" 1; 
+
+// DMC sampler animated Noise Pattern
+
+setAttr "vraySettings.dmcs_timeDependent" 0; // Animated noise pattern off
+setAttr "vraySettings.dmcs_adaptiveThreshold" 0.008; 
+
+//Environment
+//setAttr "vraySettings.cam_envtexGi" -type double3 1.2 1.2 1.2 ;
+
+// GI
+setAttr "vraySettings.giOn" 0; // GI off
+
+// Environment
+setAttr "vraySettings.cam_overrideEnvtex" 1; // GI override on
+setAttr "vraySettings.cam_envtexGi" -type double3 1.2 1.2 1.2 ;
+setAttr "vraySettings.cam_envtexGi" -type double3 0.96 1.08 1.2 ;
+setAttr "vraySettings.cam_envtexGi" -type double3 0.48 0.54 0.6 ; // GI texture 
+
+// color mapping
+setAttr "vraySettings.cmap_adaptationOnly" 0;
+setAttr "vraySettings.cmap_type" 0; //color mode Linear
+setAttr "vraySettings.cmap_clampOutput" 0; // off
+
+setAttr "vraySettings.cmap_subpixelMapping" 1;
+setAttr "vraySettings.cmap_linearworkflow" 1; // on
+
+
+// Displacement
+setAttr "vraySettings.ddisplac_maxSubdivs" 4;
+setAttr "vraySettings.sys_regsgen_xc" 48;
+
+// System
+setAttr "vraySettings.sys_rayc_dynMemLimit" 15000; // dynamic 15000;
+setAttr "vraySettings.sys_embreeUse" 1; // use Embree on
+setAttr "vraySettings.sys_rayc_faceLevelCoef" 2;
+setAttr "vraySettings.sys_distributed_rendering_on" 1;
+
+// etc
+
+setAttr "vraySettings.relements_separateFolders" 1;
+setAttr "vraySettings.relements_enableall" 0;
+setAttr "vraySettings.relements_separateFolders" 1;
+setAttr "vraySettings.sys_distributed_rendering_local" 1;
+
+//vrayAddRenderElement diffuseChannel;
+vrayAddRenderElement ExtraTexElement;
+vrayAddRenderElement ExtraTexElement;
+//vrayAddRenderElement giChannel;
+//vrayAddRenderElement lightingChannel;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement MultiMatteElement;
+vrayAddRenderElement reflectChannel;
+//vrayAddRenderElement specularChannel;
+vrayAddRenderElement zdepthChannel;
+vrayAddRenderElement LightSelectElement; 
+setAttr "vraySettings.relements_enableall" 1;
+
+setAttr "vrayRE_Multi_Matte.vray_redid_multimatte" 1;
+setAttr "vrayRE_Multi_Matte.vray_greenid_multimatte" 2;
+setAttr "vrayRE_Multi_Matte.vray_blueid_multimatte" 3;
+setAttr "vrayRE_Multi_Matte1.vray_redid_multimatte" 4;
+setAttr "vrayRE_Multi_Matte1.vray_greenid_multimatte" 5;
+setAttr "vrayRE_Multi_Matte1.vray_blueid_multimatte" 6;
+setAttr "vrayRE_Multi_Matte2.vray_redid_multimatte" 7;
+setAttr "vrayRE_Multi_Matte2.vray_greenid_multimatte" 8;
+setAttr "vrayRE_Multi_Matte2.vray_blueid_multimatte" 9;
+setAttr "vrayRE_Multi_Matte3.vray_redid_multimatte" 10;
+setAttr "vrayRE_Multi_Matte3.vray_greenid_multimatte" 11;
+setAttr "vrayRE_Multi_Matte3.vray_blueid_multimatte" 12;
+
+createRenderNode -textures "defaultNavigation -force true -connectToExisting -source %node -destination vrayRE_Extra_Tex.vray_texture_extratex" "";
+defaultNavigation -defaultTraversal -destination "vrayRE_Extra_Tex.vray_texture_extratex";
+shadingNode -asTexture VRayDirt;
+shadingNode -asUtility place2dTexture;
+connectAttr place2dTexture1.outUV VRayDirt1.uv;
+connectAttr place2dTexture1.outUvFilterSize VRayDirt1.uvFilterSize;
+defaultNavigation -force true -connectToExisting -source VRayDirt1 -destination vrayRE_Extra_Tex.vray_texture_extratex; window -e -vis false createRenderNodeWindow;
+
+createRenderNode -textures "defaultNavigation -force true -connectToExisting -source %node -destination vrayRE_Extra_Tex1.vray_texture_extratex" "";
+defaultNavigation -defaultTraversal -destination "vrayRE_Extra_Tex1.vray_texture_extratex";
+shadingNode -asTexture VRayFresnel;
+shadingNode -asUtility place2dTexture;
+connectAttr place2dTexture2.outUV VRayFresnel1.uv;
+connectAttr place2dTexture2.outUvFilterSize VRayFresnel1.uvFilterSize;
+defaultNavigation -force true -connectToExisting -source VRayFresnel1 -destination vrayRE_Extra_Tex1.vray_texture_extratex; window -e -vis false createRenderNodeWindow;
+
+setAttr "VRayDirt1.radius" 15;
+setAttr "VRayDirt1.distribution" 0.5;
+setAttr "VRayDirt1.subdivs" 24;
+
+setAttr "vrayRE_Z_depth.vray_depthBlack" 1000;
+setAttr "vrayRE_Z_depth.vray_depthWhite" 0;
+
+}
+
+
+
+global proc loeroomLayer()
+{
+
+createRenderLayer -name "CH" -number 1 -empty;
+createRenderLayer -name "CH_eyes" -number 1 -empty;
+createRenderLayer -name "ADD" -number 1 -empty;
+createRenderLayer -name "BG" -number 1 -empty;
+editRenderLayerGlobals -currentRenderLayer BG;
+renderLayerEditorRenderable RenderLayerTab "defaultRenderLayer" "0";
+editRenderLayerAdjustment "vraySettings.relements_enableall";
+setAttr "vraySettings.relements_enableall" 1;
+
+}
+
+
+global proc Layer()
+{
+
+createRenderLayer -name "CH" -number 1 -empty;
+createRenderLayer -name "CH_eyes" -number 1 -empty;
+createRenderLayer -name "CH_ADD" -number 1 -empty;
+createRenderLayer -name "ADD" -number 1 -empty;
+createRenderLayer -name "BG" -number 1 -empty;
+editRenderLayerGlobals -currentRenderLayer BG;
+renderLayerEditorRenderable RenderLayerTab "defaultRenderLayer" "0";
+editRenderLayerAdjustment "vraySettings.relements_enableall";
+setAttr "vraySettings.relements_enableall" 1;
+
+}
+
+
+
+global proc whitecuberoomLayer()
+{
+
+createRenderLayer -name "ADD" -number 1 -empty;
+createRenderLayer -name "BG" -number 1 -empty;
+createRenderLayer -name "matte" -number 1 -empty;
+createRenderLayer -name "CH" -number 1 -empty;
+createRenderLayer -name "CH_eyes" -number 1 -empty;
+createRenderLayer -name "SCREEN_light" -number 1 -empty;
+createRenderLayer -name "RL" -number 1 -empty;
+createRenderLayer -name "SCREEN" -number 1 -empty;
+createRenderLayer -name "BG_space" -number 1 -empty;
+createRenderLayer -name "CUBE" -number 1 -empty;
+
+editRenderLayerGlobals -currentRenderLayer defaultRenderLayer;
+setAttr "vrayRE_Extra_Tex.enabled" 0;
+setAttr "vrayRE_Extra_Tex1.enabled" 0;
+setAttr "vrayRE_Multi_Matte.enabled" 0;
+setAttr "vrayRE_Multi_Matte1.enabled" 0;
+setAttr "vrayRE_Multi_Matte2.enabled" 0;
+setAttr "vrayRE_Multi_Matte3.enabled" 0;
+setAttr "vrayRE_Reflection.enabled" 0;
+setAttr "vrayRE_Light_Select.enabled" 0;
+setAttr "vrayRE_Z_depth.enabled" 0;
+
+shadingNode -asShader VRayMtl;
+sets -renderable true -noSurfaceShader true -empty -name VRayMtl1SG;
+connectAttr -f VRayMtl1.outColor VRayMtl1SG.surfaceShader;
+connectAttr -f VRayMtl1SG.partition ADD.shadingGroupOverride;
+
+setAttr "vraySettings.cam_envtexReflect" -type double3 0 0 0 ;
+setAttr "vraySettings.cam_envtexRefract" -type double3 0 0 0 ;
+
+// Vray Render Element enable & disable for layer overrides
+// ADD layer setting 
+// Matrial Override for ADD Layer
+
+editRenderLayerGlobals -currentRenderLayer ADD;
+
+string $RE[] = `ls vrayRE_Multi_Matte1`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+string $RE[] = `ls vrayRE_Multi_Matte2`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+string $ENV[] = `ls vraySettings`;
+editRenderLayerAdjustment ($ENV[0]+".cam_envtexReflect");
+setAttr ($ENV[0] + ".cam_envtexReflect") -type double3 1 1 1 ;
+
+string $ENV[] = `ls vraySettings`;
+editRenderLayerAdjustment ($ENV[0]+".cam_envtexRefract");
+setAttr ($ENV[0] + ".cam_envtexRefract") -type double3 1 1 1 ;
+
+// VrayMTL1 Color
+
+string $Vraymtl[] = `ls VrayMtl1`;
+setAttr ($Vraymtl[0] + ".color") -type double3 1 1 1; 
+
+// bg
+
+editRenderLayerGlobals -currentRenderLayer BG;
+
+string $RE[] = `ls vrayRE_Extra_Tex`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+string $RE[] = `ls vrayRE_Multi_Matte`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+string $RE[] = `ls vrayRE_Reflection`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+string $RE[] = `ls vrayRE_Z_depth`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+string $ENV[] = `ls vraySettings`;
+editRenderLayerAdjustment ($ENV[0]+".cam_envtexReflect");
+setAttr ($ENV[0] + ".cam_envtexReflect") -type double3 1 1 1 ;
+
+string $ENV[] = `ls vraySettings`;
+editRenderLayerAdjustment ($ENV[0]+".cam_envtexRefract");
+setAttr ($ENV[0] + ".cam_envtexRefract") -type double3 1 1 1 ;
+
+
+// matte 
+
+editRenderLayerGlobals -currentRenderLayer matte;
+
+string $RE[] = `ls vrayRE_Multi_Matte1`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+string $ENV[] = `ls vraySettings`;
+editRenderLayerAdjustment ($ENV[0]+".cam_envtexReflect");
+setAttr ($ENV[0] + ".cam_envtexReflect") -type double3 1 1 1 ;
+
+string $ENV[] = `ls vraySettings`;
+editRenderLayerAdjustment ($ENV[0]+".cam_envtexRefract");
+setAttr ($ENV[0] + ".cam_envtexRefract") -type double3 1 1 1 ;
+
+
+// BG_space
+
+editRenderLayerGlobals -currentRenderLayer BG_space;
+
+string $RE[] = `ls vraySettings`;
+editRenderLayerAdjustment ($RE[0]+".aaFilterType");
+setAttr ($RE[0] + ".aaFilterType") 1; 
+
+string $REF[] = `ls vraySettings`;
+editRenderLayerAdjustment ($REF[0]+".aaFilterSize");
+setAttr ($REF[0] + ".aaFilterSize") 1; 
+
+string $REE[] = `ls vraySettings`;
+editRenderLayerAdjustment ($REE[0]+".globopt_mtl_filterMaps");
+setAttr ($REE[0] + ".globopt_mtl_filterMaps") 0;
+
+
+// CH
+
+editRenderLayerGlobals -currentRenderLayer CH;
+
+string $RE[] = `ls vrayRE_Extra_Tex`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+string $RE[] = `ls vrayRE_Z_depth`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+
+// SCREEN_light
+
+editRenderLayerGlobals -currentRenderLayer SCREEN_light;
+
+string $RE[] = `ls vrayRE_Light_Select`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+
+// RL
+
+editRenderLayerGlobals -currentRenderLayer RL;
+
+string $RE[] = `ls vrayRE_Extra_Tex`;
+editRenderLayerAdjustment ($RE[0]+".enabled");
+setAttr ($RE[0] + ".enabled") 1; 
+}
+
+global proc makeFloorID()
+{
+editRenderLayerGlobals -currentRenderLayer matte;
+select -r cuberoom:Floor ;
+vray addAttributesFromGroup cuberoom:Floor vray_objectID 1;
+
+//editRenderLayerAdjustment "cuberoom:Floor.vrayObjectID";
+//setAttr "cuberoom:Floor.vrayObjectID" 2;
+
+string $OI[] = `ls cuberoom:Floor`;
+editRenderLayerAdjustment ($OI[0]+".vrayObjectID");
+setAttr ($OI[0] + ".vrayObjectID") 6; 
+
+editRenderLayerGlobals -currentRenderLayer BG;
+string $OI[] = `ls cuberoom:Floor`;
+editRenderLayerAdjustment ($OI[0]+".vrayObjectID");
+setAttr ($OI[0] + ".vrayObjectID") 2; 
+
+}
+
+
+//setAttr "vraySettings.animBatchOnly" 1;
+
+
+
+
+
+global proc impReference (){
+string $anifirstpath = "A:\cobot_set";
+}
+
+
+
+
+global proc setRange()
+
+{
+
+string $stFnum = `textField -q -text "_SF_num"`;
+string $stEnum = `textField -q -text "_EF_num"`;
+int $gopSTnum = $stFnum;
+int $gopEDnum = $stEnum;
+setAttr "defaultRenderGlobals.animation" 1;
+setAttr "defaultRenderGlobals.startFrame" $gopSTnum;
+setAttr "defaultRenderGlobals.endFrame" $gopEDnum;
+playbackOptions -ast $stFnum;
+playbackOptions -aet $stEnum;
+playbackOptions -min $stFnum -max $stEnum ;
+
+}
+
+global proc Prefix()
+
+{
+
+string $scpath = `textField -q -text "Ep"`;
+string $cutpath = `textField -q -text "Cut"`;
+
+string $Layerpath = "/<Layer>/<Layer>";
+string $finalprefixpath = ( "ep" + $scpath + "/c" + $cutpath + "/cmp" + "/render" + "/images" + $Layerpath );
+
+setAttr -type "string" "vraySettings.fileNamePrefix" $finalprefixpath; 
+
+}
+
+
+
+
+global proc camera_on_func() {
+	    string $currentPanel = `getPanel -withFocus`; 
+        string $panelType = `getPanel -to $currentPanel`;
+        if ($panelType == "modelPanel"){
+            modelEditor -e -cameras true $currentPanel;
+            
+            setObjectPickMask "Rendering" 1;
+            
+        };
+		print("Camera on!\n");
+	}
+global proc camera_off_func() {
+	    string $currentPanel = `getPanel -withFocus`; 
+        string $panelType = `getPanel -to $currentPanel`;
+        if ($panelType == "modelPanel"){
+            modelEditor -e -cameras 0 $currentPanel;
+            
+            setObjectPickMask "Rendering" 0;
+            
+        };
+		print("Camera off!\n");
+	}
+
+
+
+
+
+
+
+global proc lokater_on_func() {
+	    string $currentPanel = `getPanel -withFocus`; 
+        string $panelType = `getPanel -to $currentPanel`; button -bgc 0.7 0.4 0.4 -label "BG_GI Render Option (single frame)" -command "setrenderoption" -h 30;
+        if ($panelType == "modelPanel"){
+            modelEditor -e -locators true $currentPanel;
+            
+            setObjectPickMask "Marker" 1;
+                    
+            setObjectPickMask "Other" 1;
+            
+        };
+		print("Locater on!\n");
+	}
+global proc locater_off_func() {
+	    string $currentPanel = `getPanel -withFocus`; 
+        string $panelType = `getPanel -to $currentPanel`;
+        if ($panelType == "modelPanel"){
+            modelEditor -e -locators 0 $currentPanel;
+            
+            setObjectPickMask "Marker" 0;
+                    
+            setObjectPickMask "Other" 0;
+            
+        };
+		print("Locater off!\n");
+	}
+
+
+
+
+
+
+global proc curve_on_func() {
+	    string $currentPanel = `getPanel -withFocus`; 
+        string $panelType = `getPanel -to $currentPanel`;
+        if ($panelType == "modelPanel"){
+            modelEditor -e -nurbsCurves true $currentPanel;
+            
+            setObjectPickMask "Joint" 1;
+
+            setObjectPickMask "Curve" 1;
+
+            setObjectPickMask "Deformer" 1;
+
+            setObjectPickMask "Dynamic" 1;
+            
+        };
+		print("curve on!\n");
+	}
+global proc curve_off_func() {
+	    string $currentPanel = `getPanel -withFocus`; 
+        string $panelType = `getPanel -to $currentPanel`;
+        if ($panelType == "modelPanel"){
+            modelEditor -e -nurbsCurves false $currentPanel;
+            
+            setObjectPickMask "Joint" 0;
+
+            setObjectPickMask "Curve" 0;
+
+            setObjectPickMask "Deformer" 0;
+
+            setObjectPickMask "Dynamic" 0;
+            
+        };
+		print("curve off!\n");
+	}
+
+
+
+
+global proc selPolyoff()
+
+{
+   
+   setObjectPickMask "Surface" 0 ;
+   
+}
+
+
+global proc selPolyon()
+
+{
+   
+   setObjectPickMask "Surface" 1 ;
+   
+}
+
+
+
+
+
+
+
+global proc showOnlyMode (){
+    string $currentPanel = `getPanel -withFocus`; 
+    string $panelType = `getPanel -to $currentPanel`;
+        if ($panelType == "modelPanel"){
+            modelEditor -e -allObjects 0 $currentPanel;
+            modelEditor -e -nurbsSurfaces true $currentPanel;
+            modelEditor -e -polymeshes true $currentPanel;
+            modelEditor -e -lights true $currentPanel;
+            modelEditor -e -strokes true $currentPanel;
+        
+        setObjectPickMask "Marker" 0;
+
+        setObjectPickMask "Joint" 0;
+
+        setObjectPickMask "Curve" 0;
+
+        setObjectPickMask "Deformer" 0;
+
+        setObjectPickMask "Dynamic" 0;
+
+        setObjectPickMask "Rendering" 0;
+
+        setObjectPickMask "Other" 0;
+    };
+}
+global proc showALlMode (){
+    string $currentPanel = `getPanel -withFocus`; 
+    string $panelType = `getPanel -to $currentPanel`;
+        if ($panelType == "modelPanel"){
+            modelEditor -e -allObjects 1 $currentPanel;
+        
+        setObjectPickMask "Marker" 1;
+
+        setObjectPickMask "Joint" 1;
+
+        setObjectPickMask "Curve" 1;
+
+        setObjectPickMask "Deformer" 1;
+
+        setObjectPickMask "Dynamic" 1;
+
+        setObjectPickMask "Rendering" 1;
+
+        setObjectPickMask "Other" 1;
+    };
+}
+
+
+
+
+global proc makeVopp()
+
+{
+ string $text;
+ string $result = `promptDialog 
+      -title "Rename Object"
+      -message "Enter Name:"
+      -button "OK" -button "Cancel"
+      -defaultButton "OK" -cancelButton "Cancel"
+      -dismissString "Cancel"`;
+      vray objectProperties add_single;
+ if ($result == "OK")
+      $text = `promptDialog -query -text` ;
+      select -r -ne vrayobjectproperties ;
+      rename ( "vrayobjectproperties" + "_" + $text ) ;
+      print ($text + "\n");
+}
+
+
+global proc MakeMTS(){
+    
+    if( `objExists "matte_R"` ){
+            warning("matte_Shaders is already exist :)\n");
+        }
+    else{
+///////////////////////////RED/////////////////////////////
+    string $material = `shadingNode -asShader surfaceShader -name "matte_R"`;
+    string $SG = `sets -renderable true -noSurfaceShader true -empty -name "matte_RSG"`;
+    connectAttr -f ( $material + ".outColor" ) ( $SG + ".surfaceShader" );
+    setAttr ( $material + ".outColor" ) -type double3 1 0 0 ;
+    }
+    
+    if( `objExists "matte_G"` ){
+            warning("matte_Shaders is already exist :)\n");
+        }
+    else{
+///////////////////////////GREEN/////////////////////////////
+    string $material = `shadingNode -asShader surfaceShader -name "matte_G"`;
+    string $SG = `sets -renderable true -noSurfaceShader true -empty -name "matte_GSG"`;
+    connectAttr -f ( $material + ".outColor" ) ( $SG + ".surfaceShader" );
+    setAttr ( $material + ".outColor" ) -type double3 0 1 0 ;
+    }
+    
+    if( `objExists "matte_B"` ){
+            warning("matte_Shaders is already exist :)\n");
+        }
+    else{
+///////////////////////////BLUE/////////////////////////////
+    string $material = `shadingNode -asShader surfaceShader -name "matte_B"`;
+    string $SG = `sets -renderable true -noSurfaceShader true -empty -name "matte_BSG"`;
+    connectAttr -f ( $material + ".outColor" ) ( $SG + ".surfaceShader" );
+    setAttr ( $material + ".outColor" ) -type double3 0 0 1 ;
+    }
+    
+    if( `objExists "matte_BlackHole"` ){
+            warning("matte_Shaders is already exist :)\n");
+        }
+    else{
+///////////////////////////BLACK HOLE/////////////////////////////
+    string $material = `shadingNode -asShader surfaceShader -name "matte_BlackHole"`;
+    string $SG = `sets -renderable true -noSurfaceShader true -empty -name "matte_BlackHoleSG"`;
+    connectAttr -f ( $material + ".outColor" ) ( $SG + ".surfaceShader" );
+    setAttr ( $material + ".outColor" ) -type double3 0 0 0 ;
+    setAttr ( $material + ".outMatteOpacity") -type double3 0 0 0 ;
+    }
+}
+
+// if (`window -exists $Swindow`) {
+//     deleteUI -window $Swindow;
+//     }
+
+global proc ADDO()
+{
+
+if( `objExists albert:ch` ) {
+    editRenderLayerMembers ADD albert:ch;
+} else {
+    warning("No albert exists");
+}
+if( `objExists javi:ch` ) {
+    editRenderLayerMembers ADD javi:ch;
+} else {
+    warning("No javi exists");
+}
+if( `objExists method:ch` ) {
+    editRenderLayerMembers ADD method:ch;
+} else {
+    warning("No method exists");
+}
+editRenderLayerMembers ADD cuberoom:set_cuberoom_grp method:ch;
+}
+
+global proc BGO()
+{
+
+editRenderLayerMembers BG cuberoom:set_cuberoom_grp;
+}
+
+global proc Matteo()
+{
+if( `objExists albert:ch` ) {
+    editRenderLayerMembers matte albert:ch;
+} else {
+    warning("No albert exists");
+}
+if( `objExists javi:ch` ) {
+    editRenderLayerMembers matte javi:ch;
+} else {
+    warning("No javi exists");
+}
+if( `objExists method:ch` ) {
+    editRenderLayerMembers matte method:ch;
+} else {
+    warning("No method exists");
+}
+editRenderLayerMembers matte cuberoom:set_cuberoom_grp;
+}
+
+global proc SCLO()
+{
+if( `objExists albert:ch` ) {
+    editRenderLayerMembers SCREEN_light albert:ch;
+} else {
+    warning("No albert exists");
+}
+if( `objExists javi:ch` ) {
+    editRenderLayerMembers SCREEN_light javi:ch;
+} else {
+    warning("No javi exists");
+}
+if( `objExists method:ch` ) {
+    editRenderLayerMembers SCREEN_light method:ch;
+} else {
+    warning("No method exists");
+}
+editRenderLayerMembers SCREEN_light cuberoom:set_cuberoom_grp;
+}
+
+
+global proc RLO()
+{
+if( `objExists albert:ch` ) {
+    editRenderLayerMembers RL albert:ch;
+} else {
+    warning("No albert exists");
+}
+if( `objExists javi:ch` ) {
+    editRenderLayerMembers RL javi:ch;
+} else {
+    warning("No javi exists");
+}
+if( `objExists method:ch` ) {
+    editRenderLayerMembers RL method:ch;
+} else {
+    warning("No method exists");
+}
+editRenderLayerMembers RL cuberoom:Floor_G;
+}
+
+global proc SCO()
+{
+editRenderLayerMembers SCREEN cuberoom:screens;
+}
+     
+Rootwin();
