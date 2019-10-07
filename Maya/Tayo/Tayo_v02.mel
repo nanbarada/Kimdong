@@ -1,0 +1,1054 @@
+kwin();
+global proc kwin(){
+ string $Swindow = "kimwin";
+ if (`window -exists $Swindow`) {
+     deleteUI -window $Swindow;
+     }
+$PierceRC = `window -title "Tayo" -iconName "RC" -menuBar 1 kimwin`;
+string $form = `formLayout`;
+string $tabs = `tabLayout`;
+formLayout -edit
+    -attachForm $tabs "top"    0
+    -attachForm $tabs "left"   0
+    -attachForm $tabs "bottom" 0
+    -attachForm $tabs "right"  0
+    $form;
+
+    string $child1 = `columnLayout`;
+				textFieldGrp -width 220 -text "1. Load a Default Set" -editable 0 ;
+				button -width 220 -bgc 0.6 0.6 0.9 -label "Click Here to Load Default Scene" -c "defscene";
+					textFieldGrp -width 220 -text "2. Load a light Set" -editable 0 ;
+					columnLayout;
+								$radio1 = `radioCollection`;
+									$L0 = `radioButton -label "Default" -onc "Tayo_light_set(1)"`;
+									$L1 = `radioButton -label "Sunset" -onc "Tayo_light_set(2)"`;
+									$L2 = `radioButton -label "Cloudy" -onc "Tayo_light_set(3)"`;
+									$L3 = `radioButton -label "Day" -onc "Tayo_light_set(4)"`;	
+									$L4 = `radioButton -label "Night" -onc "Tayo_light_set(5)"`;								
+							setParent ..;				
+							textFieldGrp -width 220 -text "3. Setup your File Naming & Path" -editable 0 ;
+							rowColumnLayout -nc 9;
+								text -width 16 -label " Sc ";
+								textField -width 29 -tx "05" "Sc"; 
+								text -width 24 -label " Ep ";
+								textField -width 24 -tx "03" "Ep";
+								text -width 24 -label " Cut";
+								textField -width 29 -tx "001" "Cut";
+								text -width 8 "";
+								button -width 26 -label "Prf" -c "Prefix";
+								button -width 26 -label "Mov" -c "Mov";
+							setParent ..;
+							textFieldGrp -width 220 -text "4. Setup your Frame Timeline" -editable 0 ;
+							rowLayout -nc 7;
+								text -width 33 -label " start"; 
+								textField -width 35 -tx "101" "_SF_num"; 
+								text -width 20 -label " end"; 
+								textField -width 35 "_EF_num";
+								text -width 11 "";
+								button -label "Set Range" -w 70 -c "setRange";
+							setParent ..;	
+							
+							textFieldGrp -width 220 -text "5. Load your Animation Reference" -editable 0 ;						
+							rowColumnLayout;
+								button -width 220 -bgc 0.6 0.6 0.9-label "Create Ani Reference" -c "createaniref";
+							setParent ..;
+							
+							rowColumnLayout;
+								button -width 220 -bgc 0.3 0.3 0.6-label "F_Cha Button" -c "FCHA";
+								button -width 220 -bgc 0.3 0.3 0.6-label "R_Cha Button" -c "RCHA";
+								button -width 220 -bgc 0.3 0.3 0.6-label "BG Button" -c "BG";
+							setParent ..;	
+							
+							textFieldGrp -width 220 -text "6. Sorting Asset by Youself" -editable 0 ;	
+							textFieldGrp -width 220 -text "7. Auto Process" -editable 0 ;							
+
+							rowColumnLayout;						
+								button -width 220 -bgc 0.2 0.2 0.5-label "One for All" -c "OFA";
+								button -width 220 -bgc 0.2 0.2 0.5-label "One for BG Only" -c "OFBG";
+							setParent ..;
+
+							textFieldGrp -width 220 -text "8. Custom Process" -editable 0 ;
+							
+							rowColumnLayout;					
+								button -width 220 -bgc 0.1 0.1 0.5-label "Cam & Depth Setting" -c "cam";
+								button -width 220 -bgc 0.1 0.1 0.5-label "GLobal Render Setting" -c "GSET";
+								button -width 220 -bgc 0.1 0.1 0.5-label "Global AOV Setting" -c "AOVSET";
+								button -width 220 -bgc 0.1 0.1 0.5-label "Render Layer Setting" -c "LSETS";
+								button -width 220 -bgc 0.1 0.1 0.5-label "Render Layer Membering" -c "LSETM";
+								button -width 220 -bgc 0.1 0.1 0.5-label "Proxy Setup" -c "PROXYSETUP";
+								button -width 220 -bgc 0.1 0.1 0.5-label "From Proxy" -c "PROXYSETUP2";								
+							setParent ..;							
+				setParent ..;
+		string $child2 = `columnLayout`;		
+						textFieldGrp -width 220 -text "Submit" -editable 0 ;	
+						rowColumnLayout;
+							button -width 220 -bgc 0.8 0.9 0.9-label "Submit Job To Deadline" -c "submit";
+						setParent ..;
+				setParent ..;					
+			setParent ..;		
+    tabLayout -edit
+        -tabLabel $child1 "Outside" -tabLabel $child2 "Submit to Deadline"
+        $tabs;	
+showWindow;
+}
+
+global proc FCHA()
+{
+	$FCHAOBJ = `ls -sl`;
+	for ( $FCOMPO in $FCHAOBJ ) {
+		sets -edit -forceElement _F_Cha_rsVisibility_ $FCOMPO; 
+		sets -edit -forceElement _Cha_ $FCOMPO; 
+		print ($FCOMPO + "\n");
+	}
+}
+global proc RCHA()
+{
+	$RCHAOBJ = `ls -sl`;
+	for ( $RCOMPO in $RCHAOBJ ) {
+		sets -edit -forceElement _R_Cha_rsVisibility_ $RCOMPO; 
+		sets -edit -forceElement _Cha_ $RCOMPO;
+		print ($RCOMPO + "\n");
+	}
+}
+global proc BG()
+{
+	$BGOBJ = `ls -sl`;
+	for ( $BGCOMPO in $BGOBJ ) {
+		sets -edit -forceElement _BG_rsMatteParameters_ $BGCOMPO; 
+		sets -edit -forceElement _BG_ $BGCOMPO; 
+		print ($BGCOMPO + "\n");
+	}
+}
+
+global proc OFA()
+{
+cam;
+GSET;
+AOVSET;
+LSET;
+PROXYSETUP;
+}
+
+global proc OFBG()
+{
+cam;
+GSET;
+AOVSET;
+BGSET;
+PROXYSETUP;
+}
+
+global proc Tayo_light_set(int $opt)
+{
+    switch ($opt)
+	{
+        case 1:
+			file -r -type "mayaBinary"  -ignoreVersion -gl -mergeNamespacesOnClash true -namespace ":" -options "v=0;" "X:/Tayo/Season05/EP00/Lighting/LightSet/Outdoor/TA05EP00_L_Outdoor_Day_LS.mb";		
+        break;
+        
+        case 2:
+			file -r -type "mayaBinary"  -ignoreVersion -gl -mergeNamespacesOnClash true -namespace ":" -options "v=0;" "X:/Tayo/Season05/EP00/Lighting/LightSet/Outdoor/TA05EP00_L_Outdoor_Sunset_LS.mb";
+			
+		break;
+        
+        case 3:
+			file -r -type "mayaBinary"  -ignoreVersion -gl -mergeNamespacesOnClash true -namespace ":" -options "v=0;" "X:/Tayo/Season05/EP00/Lighting/LightSet/Outdoor/TA05EP00_L_Outdoor_Cloudy_LS.mb";
+
+        break;
+        
+        case 4:
+			file -r -type "mayaBinary"  -ignoreVersion -gl -mergeNamespacesOnClash true -namespace ":" -options "v=0;" "X:/Tayo/Season05/EP00/Lighting/LightSet/Outdoor/TA05EP00_L_Outdoor_Day_LS.mb";	
+        break;
+
+        case 5:
+			file -r -type "mayaBinary"  -ignoreVersion -gl -mergeNamespacesOnClash true -namespace ":" -options "v=0;" "X:/Tayo/Season05/EP00/Lighting/LightSet/Outdoor/TA05EP00_L_Outdoor_L_Outdoor_Night_LS.mb";
+        break;		
+		
+    }
+}
+
+global proc submit()
+{
+SubmitJobToDeadline;
+}
+
+global proc setRange()
+{
+string $stFnum = `textField -q -text "_SF_num"`;
+string $stEnum = `textField -q -text "_EF_num"`;
+int $gopSTnum = $stFnum;
+int $gopEDnum = $stEnum;
+setAttr "defaultRenderGlobals.animation" 1;
+setAttr "defaultRenderGlobals.startFrame" $gopSTnum;
+setAttr "defaultRenderGlobals.endFrame" $gopEDnum;
+playbackOptions -ast $stFnum;
+playbackOptions -aet $stEnum;
+playbackOptions -min $stFnum -max $stEnum ;
+}
+
+global proc PROXYSETUP()
+{
+rsPrxSel();
+fromScene();
+}
+
+global proc PROXYSETUP2()
+{
+rsPrxSel();
+fromProxy();
+}
+
+
+global proc Prefix()
+{
+string $Scpath = `textField -q -text "Sc"`;
+string $Eppath = `textField -q -text "Ep"`;
+string $Cutpath = `textField -q -text "Cut"`;
+string $Placepath = "Playground";
+string $Timepath = "Day";
+string $Folderpath = "T:\\Tayo\\Season" + $Scpath + "\\Lighting\\EP" + $Eppath + "\\C" + $Cutpath + "\\Src\\";
+sysFile -makeDir $Folderpath; 
+string $fullname = ( "T:\\Tayo\\Season" + $Scpath + "\\Lighting\\EP" + $Eppath + "\\C" + $Cutpath + "\\Src\\TA" + $Scpath + "EP" + $Eppath + "_C" + $Cutpath + "_" + "LD.mb" );
+// K:\Tayo\Season05\EP03\Render\C052\R_Cha
+string $finalprefixpath = ( "K:\\Tayo\\Season" + $Scpath + "\\" + "EP" + $Eppath + "\\Render\\C" + $Cutpath + "\\<RenderLayer>\\<RenderLayer>" );
+setAttr -type "string" defaultRenderGlobals.imageFilePrefix $finalprefixpath;
+file -rename $fullname; 
+print $fullname;
+}
+
+// T\Tayo\Season05\Animation\EP03\C001\Preview
+global proc Mov()
+{
+string $Scpath = `textField -q -text "Sc"`;
+string $Eppath = `textField -q -text "Ep"`;
+string $Cutpath = `textField -q -text "Cut"`;
+string $movname = ( "T:\\Tayo\\Season05\\Animation\\EP" + $Eppath + "\\C" + $Cutpath + "\\Preview\\TA05" + "EP" + $Eppath + "_C" + $Cutpath + "_AD.mov" );
+launch -movie $movname;
+}
+
+global proc defscene()
+{
+file -o -f "T:\\Tayo\\Season05\\Lighting\\EP03\\EP_03_MasterScene.mb";
+}
+
+global proc createaniref()
+{
+string $Scpath = `textField -q -text "Sc"`;
+string $Eppath = `textField -q -text "Ep"`;
+string $Cutpath = `textField -q -text "Cut"`;
+string $aniname = ( "T:\\Tayo\\Season" + $Scpath + "\\Animation\\EP" + $Eppath + "\\C" + $Cutpath + "\\Src\\TA" + $Scpath + "EP" + $Eppath + "_C" + $Cutpath + "_AD.mb" );
+string $anirefname = "Animation_C" + $Cutpath;
+file -r -type "mayaBinary" -ignoreVersion -gl -mergeNamespacesOnClash false -namespace $anirefname -options "v=0;" $aniname;
+}
+
+global proc cam()
+{
+setAttr "frontShape.renderable" 0;
+setAttr "perspShape.renderable" 0;
+setAttr "sideShape.renderable" 0;
+setAttr "topShape.renderable" 0;
+string $Cutpath = `textField -q -text "Cut"`;
+//string $Bookpath = `textField -q -text "Book"`;
+//string $FCAM = "Book" + $Bookpath + "_C" + $Cutpath + ".renderable";
+string $FCAM = "Animation_C" + $Cutpath + ":RcamShape.renderable";
+setAttr $FCAM 1;
+string $Farclip = "Animation_C" + $Cutpath + ":RcamShape.farClipPlane";
+setAttr $Farclip 50000;
+//setAttr "Animation_C088A:RcamShape.farClipPlane" 50000;
+}
+
+global proc INCAM()
+{
+setAttr "frontShape.renderable" 0;
+setAttr "perspShape.renderable" 0;
+setAttr "sideShape.renderable" 0;
+setAttr "topShape.renderable" 0;
+string $Cutpath = `textField -q -text "Cut"`;
+//string $Bookpath = `textField -q -text "Book"`;
+//string $FCAM = "Book" + $Bookpath + "_C" + $Cutpath + ".renderable";
+string $FCAM = "Animation_C" + $Cutpath + ":RcamShape.renderable";
+setAttr $FCAM 1;
+string $Farclip = "Animation_C" + $Cutpath + ":RcamShape.farClipPlane";
+setAttr $Farclip 500;
+//setAttr "Animation_C088A:RcamShape.farClipPlane" 500;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////NEED TO WORK////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+global proc GSET()
+{
+	setAttr "defaultRenderGlobals.animation" 1;
+	setAttr "defaultResolution.width" 1280;
+	setAttr "defaultResolution.height" 720;
+	setAttr "defaultResolution.deviceAspectRatio" 1.778;
+	setAttr "defaultRenderGlobals.enableDefaultLight" 0;
+	//Setting for Output Tab 
+	setAttr "redshiftOptions.unifiedMinSamples" 8;
+	setAttr "redshiftOptions.unifiedMaxSamples" 128;
+	setAttr "redshiftOptions.unifiedAdaptiveErrorThreshold" 0.001;
+	setAttr "redshiftOptions.unifiedRandomizePattern" 1;
+	setAttr "redshiftOptions.unifiedFilterType" 2;
+	setAttr "redshiftOptions.unifiedFilterSize" 3.0;
+	setAttr "redshiftOptions.unifiedMaxOverbright" 1.3;
+	setAttr "redshiftOptions.glossyRayMaxOverbright" 1.18;
+	//Not Using Linear Workflow
+	setAttr "redshiftOptions.displayGammaValue" 2.2;
+	setAttr "redshiftOptions.gammaCorrectColorInputs" 1;
+	//for 8bit image - eg. iff,tga etc
+	//setAttr "redshiftOptions.quantizeTo8BitAndDither" 1;
+	//Setting for Opt Tab
+	setAttr "redshiftOptions.reflectionMaxTraceDepth" 3;
+	setAttr "redshiftOptions.refractionMaxTraceDepth" 3;
+	setAttr "redshiftOptions.combinedMaxTraceDepth" 6;
+	//Setting for GI      
+	setAttr "redshiftOptions.primaryGIEngine" 4;
+	setAttr "redshiftOptions.secondaryGIEngine" 2;
+	setAttr "redshiftOptions.numGIBounces" 2;
+	setAttr "redshiftOptions.bruteForceGINumRays" 1024;
+	setAttr "redshiftOptions.irradiancePointCloudNumSamplesPerPixel" 12;
+	setAttr "redshiftOptions.irradiancePointCloudRetraceThreshold" 2;
+	setAttr "redshiftOptions.irradianceCacheMinDetail" 0.5;
+	setAttr "redshiftOptions.irradianceCacheAdaptiveAmount" 0.88;
+	//Setting for SSS
+	setAttr "redshiftOptions.subsurfaceScatteringRate" 1;  //High(4 sampels/pixel)
+	setAttr "redshiftOptions.subsurfaceScatteringInterpolationQuality" 64; //Interpolation Quality - High
+	//Setting for Memory
+	setAttr "redshiftOptions.percentageOfGPUMemoryToUse" 90;
+	setAttr "redshiftOptions.numGPUMBToReserveForRays" 2200;  
+}
+
+global proc AOVSET()
+{
+	//aovList = [ 'Depth', 'Motion Vectors', 'Normals', 'Puzzle Matte' ]
+	rsCreateAov -type "Depth";
+	rsCreateAov -type "Motion Vectors";
+	rsCreateAov -type "Normals";
+	rsCreateAov -type "Puzzle Matte";
+	//Depth
+	setAttr "rsAov_Depth.exrBits" 32; //32 bit float exr for Depth Pass   
+
+	//AOV
+	setAttr "rsAov_PuzzleMatte.mode" 1;  //Object id mode
+	setAttr "rsAov_PuzzleMatte.redId" 1001;
+	setAttr "rsAov_PuzzleMatte.greenId" 1002;
+	setAttr "rsAov_PuzzleMatte.blueId" 1003; 
+
+	rsCreateAov -type "Puzzle Matte";
+	setAttr "rsAov_PuzzleMatte1.mode" 1;  //Object id mode
+	setAttr "rsAov_PuzzleMatte1.redId" 1004;
+	setAttr "rsAov_PuzzleMatte1.greenId" 1005;
+	setAttr "rsAov_PuzzleMatte1.blueId" 1006; 	
+
+	//Turn off in the Master layer
+	setAttr "rsAov_Depth.enabled" 0;
+	setAttr "rsAov_MotionVectors.enabled" 0;
+	setAttr "rsAov_Normals.enabled" 0;
+	setAttr "rsAov_PuzzleMatte.enabled" 0; 
+	//Update
+	//redshiftUpdateActiveAovList;
+	//Turn off AOV GLOBAL
+	setAttr "redshiftOptions.aovGlobalEnableMode" 0;
+}
+
+
+////////////////////// Layer Setting Only //////////////////////
+
+// button -width 220 -bgc 0.1 0.1 0.5-label "Render Layer Setting" -c "LSETS";
+// button -width 220 -bgc 0.1 0.1 0.5-label "Render Layer Membering" -c "LSETM";
+
+global proc LSETM()
+{
+	// Join Members
+	editRenderLayerGlobals -currentRenderLayer BG_Layer;
+	editRenderLayerMembers -noRecurse BG_Layer _BG_;
+	editRenderLayerMembers -noRecurse BG_Layer _Cha_;
+	editRenderLayerMembers -noRecurse BG_Layer _LIGHT_SET_;
+
+	editRenderLayerGlobals -currentRenderLayer F_Cha;	
+	editRenderLayerMembers -noRecurse F_Cha _BG_;
+	editRenderLayerMembers -noRecurse F_Cha _Cha_;
+	editRenderLayerMembers -noRecurse F_Cha _LIGHT_SET_;	
+
+	editRenderLayerGlobals -currentRenderLayer R_Cha;
+	editRenderLayerMembers -noRecurse R_Cha _BG_;
+	editRenderLayerMembers -noRecurse R_Cha _Cha_;
+	editRenderLayerMembers -noRecurse R_Cha _LIGHT_SET_;
+
+	editRenderLayerGlobals -currentRenderLayer AO_Layer;
+	editRenderLayerMembers -noRecurse AO_Layer _BG_;
+	editRenderLayerMembers -noRecurse AO_Layer _Cha_;	
+}
+global proc LSETS()
+{
+	///////////////////////////////// BG Setting ////////////////////////////////////
+	//createRenderLayer -n "BG_Layer" -noRecurse -number 1 -empty;
+
+	//// AOV SET
+	editRenderLayerGlobals -currentRenderLayer BG_Layer;
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;
+	editRenderLayerAdjustment "rsAov_Depth.enabled";
+	editRenderLayerAdjustment "rsAov_Normals.enabled";
+	setAttr "rsAov_Normals.enabled" 1;
+	setAttr "rsAov_Depth.enabled" 1;
+	
+	// Join Members
+	// editRenderLayerMembers -noRecurse BG_Layer _BG_;
+	// editRenderLayerMembers -noRecurse BG_Layer _Cha_;
+	// editRenderLayerMembers -noRecurse BG_Layer _LIGHT_SET_;
+	
+	// Override
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.secondaryRayVisible" 0;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.secondaryRayVisible" 0;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringRate";
+	setAttr "redshiftOptions.subsurfaceScatteringRate" -2 ;
+	//editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringInterpolationQuality"
+	//setAttr "redshiftOptions.subsurfaceScatteringInterpolationQuality" 4;
+
+	/////////////////////////// Front Cha layer Setting /////////////////////////////
+	//createRenderLayer -n "F_Cha" -noRecurse -number 1 -empty;
+
+	//Assignment
+	// Join Members
+	editRenderLayerGlobals -currentRenderLayer F_Cha;	
+	// editRenderLayerMembers -noRecurse F_Cha _BG_;
+	// editRenderLayerMembers -noRecurse F_Cha _Cha_;
+	// editRenderLayerMembers -noRecurse F_Cha _LIGHT_SET_;
+
+	//Ground Holdout
+	editRenderLayerAdjustment "_BG_rsMatteParameters_.matteEnable";
+	setAttr "_BG_rsMatteParameters_.matteEnable" 1;
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.secondaryRayVisible" 0;
+
+	//Change Physical Sky to Environment Node
+	//editRenderLayerAdjustment "redshiftOptions.environment";
+	//connectAttr "redshiftEnvironment_CH1_2.outColor" "redshiftOptions.environment" force;
+
+	//AOV Override
+	editRenderLayerGlobals -currentRenderLayer F_Cha;
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;
+	editRenderLayerAdjustment "rsAov_Depth.enabled";
+	editRenderLayerAdjustment "rsAov_Normals.enabled";
+	setAttr "rsAov_Normals.enabled" 1;
+	setAttr "rsAov_Depth.enabled" 1;	
+
+	////////////////////////////// Rear Cha layer Setting ////////////////////////////////////
+	editRenderLayerGlobals -currentRenderLayer R_Cha;
+	//Assignment
+	editRenderLayerGlobals -currentRenderLayer R_Cha;
+	// editRenderLayerMembers -noRecurse R_Cha _BG_;
+	// editRenderLayerMembers -noRecurse R_Cha _Cha_;
+	// editRenderLayerMembers -noRecurse R_Cha _LIGHT_SET_;
+	
+	//Ground Holdout
+	editRenderLayerAdjustment "_BG_rsMatteParameters_.matteEnable";
+	setAttr "_BG_rsMatteParameters_.matteEnable" 1;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.secondaryRayVisible" 0;
+	//AOV Override
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;
+	editRenderLayerAdjustment "rsAov_Depth.enabled";
+	setAttr "rsAov_Depth.enabled" 1;
+	editRenderLayerAdjustment "rsAov_Normals.enabled";
+	setAttr "rsAov_Normals.enabled" 1;
+	
+	///////////////////////////////// AOV Setting ////////////////////////////////////
+	
+	//Assignment
+	editRenderLayerGlobals -currentRenderLayer AO_Layer;
+	// editRenderLayerMembers -noRecurse AO_Layer _BG_;
+	// editRenderLayerMembers -noRecurse AO_Layer _Cha_;
+	
+	// Create AO Shader
+	editRenderLayerGlobals -currentRenderLayer AO_Layer;
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;	
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	editRenderLayerAdjustment "rsAov_PuzzleMatte.enabled";
+	setAttr "rsAov_PuzzleMatte.enabled" 1;	
+
+	// GI & SSS Override
+	editRenderLayerAdjustment "redshiftOptions.primaryGIEngine";
+	setAttr "redshiftOptions.primaryGIEngine" 0;
+	editRenderLayerAdjustment "redshiftOptions.secondaryGIEngine";
+	setAttr "redshiftOptions.secondaryGIEngine" 0;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringRate";
+	setAttr "redshiftOptions.subsurfaceScatteringRate" -3;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringInterpolationQuality";
+	setAttr "redshiftOptions.subsurfaceScatteringInterpolationQuality" 4;
+
+	
+}
+
+
+
+global proc LSET()
+{
+	///////////////////////////////// BG Setting ////////////////////////////////////
+	//createRenderLayer -n "BG_Layer" -noRecurse -number 1 -empty;
+
+	//// AOV SET
+	editRenderLayerGlobals -currentRenderLayer BG_Layer;
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;
+	editRenderLayerAdjustment "rsAov_Depth.enabled";
+	editRenderLayerAdjustment "rsAov_Normals.enabled";
+	setAttr "rsAov_Normals.enabled" 1;
+	setAttr "rsAov_Depth.enabled" 1;
+	
+	// Join Members
+	editRenderLayerMembers -noRecurse BG_Layer _BG_;
+	editRenderLayerMembers -noRecurse BG_Layer _Cha_;
+	editRenderLayerMembers -noRecurse BG_Layer _LIGHT_SET_;
+	
+	// Override
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.secondaryRayVisible" 0;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.secondaryRayVisible" 0;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringRate";
+	setAttr "redshiftOptions.subsurfaceScatteringRate" -2 ;
+	//editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringInterpolationQuality"
+	//setAttr "redshiftOptions.subsurfaceScatteringInterpolationQuality" 4;
+
+	/////////////////////////// Front Cha layer Setting /////////////////////////////
+	//createRenderLayer -n "F_Cha" -noRecurse -number 1 -empty;
+
+	//Assignment
+	// Join Members
+	editRenderLayerGlobals -currentRenderLayer F_Cha;	
+	editRenderLayerMembers -noRecurse F_Cha _BG_;
+	editRenderLayerMembers -noRecurse F_Cha _Cha_;
+	editRenderLayerMembers -noRecurse F_Cha _LIGHT_SET_;
+
+	//Ground Holdout
+	editRenderLayerAdjustment "_BG_rsMatteParameters_.matteEnable";
+	setAttr "_BG_rsMatteParameters_.matteEnable" 1;
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.secondaryRayVisible" 0;
+
+	//Change Physical Sky to Environment Node
+	//editRenderLayerAdjustment "redshiftOptions.environment";
+	//connectAttr "redshiftEnvironment_CH1_2.outColor" "redshiftOptions.environment" force;
+
+	//AOV Override
+	editRenderLayerGlobals -currentRenderLayer F_Cha;
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;
+	editRenderLayerAdjustment "rsAov_Depth.enabled";
+	editRenderLayerAdjustment "rsAov_Normals.enabled";
+	setAttr "rsAov_Normals.enabled" 1;
+	setAttr "rsAov_Depth.enabled" 1;	
+
+	////////////////////////////// Rear Cha layer Setting ////////////////////////////////////
+	editRenderLayerGlobals -currentRenderLayer R_Cha;
+	//Assignment
+	editRenderLayerGlobals -currentRenderLayer R_Cha;
+	editRenderLayerMembers -noRecurse R_Cha _BG_;
+	editRenderLayerMembers -noRecurse R_Cha _Cha_;
+	editRenderLayerMembers -noRecurse R_Cha _LIGHT_SET_;
+	
+	//Ground Holdout
+	editRenderLayerAdjustment "_BG_rsMatteParameters_.matteEnable";
+	setAttr "_BG_rsMatteParameters_.matteEnable" 1;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.secondaryRayVisible" 0;
+	//AOV Override
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;
+	editRenderLayerAdjustment "rsAov_Depth.enabled";
+	setAttr "rsAov_Depth.enabled" 1;
+	editRenderLayerAdjustment "rsAov_Normals.enabled";
+	setAttr "rsAov_Normals.enabled" 1;
+	
+	///////////////////////////////// AOV Setting ////////////////////////////////////
+	
+	//Assignment
+	editRenderLayerGlobals -currentRenderLayer AO_Layer;
+	editRenderLayerMembers -noRecurse AO_Layer _BG_;
+	editRenderLayerMembers -noRecurse AO_Layer _Cha_;
+	
+	// Create AO Shader
+	editRenderLayerGlobals -currentRenderLayer AO_Layer;
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;	
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	editRenderLayerAdjustment "rsAov_PuzzleMatte.enabled";
+	setAttr "rsAov_PuzzleMatte.enabled" 1;	
+
+	// GI & SSS Override
+	editRenderLayerAdjustment "redshiftOptions.primaryGIEngine";
+	setAttr "redshiftOptions.primaryGIEngine" 0;
+	editRenderLayerAdjustment "redshiftOptions.secondaryGIEngine";
+	setAttr "redshiftOptions.secondaryGIEngine" 0;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringRate";
+	setAttr "redshiftOptions.subsurfaceScatteringRate" -3;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringInterpolationQuality";
+	setAttr "redshiftOptions.subsurfaceScatteringInterpolationQuality" 4;
+
+	
+}
+
+///////////////////////// BG Only /////////////////////////////
+
+global proc BGSET()
+{
+	///////////////////////////////// BG Setting ////////////////////////////////////
+	//createRenderLayer -n "BG_Layer" -noRecurse -number 1 -empty;
+
+	//// AOV SET
+	editRenderLayerGlobals -currentRenderLayer BG_Layer;
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;
+	editRenderLayerAdjustment "rsAov_Depth.enabled";
+	editRenderLayerAdjustment "rsAov_Normals.enabled";
+	setAttr "rsAov_Normals.enabled" 1;
+	setAttr "rsAov_Depth.enabled" 1;
+	
+	// Join Members
+	editRenderLayerMembers -noRecurse BG_Layer _BG_;
+	editRenderLayerMembers -noRecurse BG_Layer _LIGHT_SET_;
+	
+	// Override
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_R_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_R_Cha_rsVisibility_.secondaryRayVisible" 0;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.primaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.primaryRayVisible" 0;
+	editRenderLayerAdjustment "_F_Cha_rsVisibility_.secondaryRayVisible";
+	setAttr "_F_Cha_rsVisibility_.secondaryRayVisible" 0;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringRate";
+	setAttr "redshiftOptions.subsurfaceScatteringRate" -2 ;
+	//editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringInterpolationQuality"
+	//setAttr "redshiftOptions.subsurfaceScatteringInterpolationQuality" 4;
+
+	///////////////////////////////// AO Setting ////////////////////////////////////
+	
+	//Assignment
+	editRenderLayerGlobals -currentRenderLayer AO_Layer;
+	editRenderLayerMembers -noRecurse AO_Layer _BG_;
+	
+	// Create AO Shader
+	editRenderLayerGlobals -currentRenderLayer AO_Layer;
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	setAttr "redshiftOptions.aovGlobalEnableMode" 1;	
+	editRenderLayerAdjustment "redshiftOptions.aovGlobalEnableMode";
+	editRenderLayerAdjustment "rsAov_PuzzleMatte.enabled";
+	setAttr "rsAov_PuzzleMatte.enabled" 1;	
+
+	// GI & SSS Override
+	editRenderLayerAdjustment "redshiftOptions.primaryGIEngine";
+	setAttr "redshiftOptions.primaryGIEngine" 0;
+	editRenderLayerAdjustment "redshiftOptions.secondaryGIEngine";
+	setAttr "redshiftOptions.secondaryGIEngine" 0;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringRate";
+	setAttr "redshiftOptions.subsurfaceScatteringRate" -3;
+	editRenderLayerAdjustment "redshiftOptions.subsurfaceScatteringInterpolationQuality";
+	setAttr "redshiftOptions.subsurfaceScatteringInterpolationQuality" 4;
+	
+}
+
+global proc rsPrxSel(){
+	string $listsA[] = `ls -type RedshiftProxyMesh`;
+	select $listsA;
+}
+
+global proc fromProxy(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".materialMode") 0;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".materialMode");
+    	setAttr ($s+".materialMode") 0;
+	 	}	     		
+	}
+	$count++;	
+};
+
+global proc fromScene(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".materialMode") 1;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".materialMode");
+    	setAttr ($s+".materialMode") 1;
+	 	}	     		
+	}
+	$count++;	
+};
+
+global proc fromScene_name(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".materialMode") 2;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".materialMode");
+    	setAttr ($s+".materialMode") 2;
+	 	}	     		
+	}
+	$count++;	
+};
+
+
+
+global proc objID_On(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".objectIdMode") 1;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".objectIdMode");
+    	setAttr ($s+".objectIdMode") 1;
+	 	}	     		
+	}
+	$count++;	
+};
+global proc objID_Off(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".objectIdMode") 0;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".objectIdMode");
+    	setAttr ($s+".objectIdMode") 0;
+	 	}	     		
+	}
+	$count++;	
+};
+
+global proc vm_On(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".visibilityMode") 1;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".visibilityMode");
+    	setAttr ($s+".visibilityMode") 1;
+	 	}	     		
+	}
+	$count++;	
+};
+
+global proc vm_Off(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".visibilityMode") 0;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".visibilityMode");
+    	setAttr ($s+".visibilityMode") 0;
+	 	}	     		
+	}
+	$count++;	
+};
+
+global proc td_On(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".tessellationMode") 1;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".tessellationMode");
+    	setAttr ($s+".tessellationMode") 1;
+	 	}	     		
+	}
+	$count++;	
+};
+
+global proc td_Off(){
+	int $count;
+	int $i;
+	int $x;
+	//select `listRelatives -ad`;
+	string $selectionList[] = `ls -sl`;
+	string $clayer = `editRenderLayerGlobals -q -currentRenderLayer`;
+
+	$count = 0;
+	for ( $i = 0; $i < size( $selectionList ); $i++ ) {
+        string $s = $selectionList[$i];
+		if($clayer == "defaultRenderLayer"){        	   
+    	setAttr ($s+".tessellationMode") 0;
+	 	}
+		else{
+		editRenderLayerAdjustment ($s+".tessellationMode");
+    	setAttr ($s+".tessellationMode") 0;
+	 	}	     		
+	}
+	$count++;	
+};
+
+////////////////////// Align ////////////////////
+
+global proc alignTX() {
+    global string $sel[];
+    global int $size;
+    
+    global float $locationArray[];
+    global float $curItem[3];
+    global float $alignToMe[3];
+    
+    
+    for ($counter = 0; $counter < ($size-1); $counter++)
+    {
+    	string $moveItem;
+    	$moveItem = $sel[$counter];
+    	$curItem = `xform -q -ws -rp $sel[($counter)]`;
+    	move -ws -rpr $alignToMe[0] $curItem[1] $curItem[2] $moveItem;
+    }
+};
+
+
+//Align TY
+global proc alignTY() {
+    global string $sel[];
+    global int $size;
+    
+    global float $locationArray[];
+    global float $curItem[3];
+    global float $alignToMe[3];
+
+	for ($counter = 0; $counter < ($size-1); $counter++)
+	{
+		string $moveItem;
+		$moveItem = $sel[$counter];
+		$curItem = `xform -q -ws -rp $sel[($counter)]`;
+		move -ws -rpr $curItem[0] $alignToMe[1] $curItem[2] $moveItem;
+	}
+	
+};
+
+//Align TZ
+global proc alignTZ() {
+    global string $sel[];
+    global int $size;
+    
+    global float $locationArray[];
+    global float $curItem[3];
+    global float $alignToMe[3];
+
+
+	for ($counter = 0; $counter < ($size-1); $counter++)
+	{
+		string $moveItem;
+		$moveItem = $sel[$counter];
+		$curItem = `xform -q -ws -rp $sel[($counter)]`;
+		move -ws -rpr $curItem[0] $curItem[1] $alignToMe[2] $moveItem;
+	}
+	
+};
+
+//Align RX
+global proc alignRX() {
+    global string $sel[];
+    global int $size;
+    
+    global float $rotationArray[];
+    global float $curItem[3];
+    global float $alignRotToMe[3];
+
+
+	for ($counter = 0; $counter < ($size-1); $counter++)
+	{
+		string $moveItem;
+		$moveItem = $sel[$counter];
+		$curItem = `xform -q -ws -ro $sel[($counter)]`;
+		xform -ws -ro $alignRotToMe[0] $curItem[1] $curItem[2] $moveItem;
+	}
+	
+};
+
+//Align RY
+global proc alignRY() {
+    global string $sel[];
+    global int $size;
+    
+    global float $rotationArray[];
+    global float $curItem[3];
+    global float $alignRotToMe[3];
+
+
+	for ($counter = 0; $counter < ($size-1); $counter++)
+	{
+		string $moveItem;
+		$moveItem = $sel[$counter];
+		$curItem = `xform -q -ws -ro $sel[($counter)]`;
+		xform -ws -ro $curItem[0] $alignRotToMe[1] $curItem[2] $moveItem;
+	}
+	
+};
+
+//Align RZ
+global proc alignRZ() {
+    global string $sel[];
+    global int $size;
+    
+    global float $rotationArray[];
+    global float $curItem[3];
+    global float $alignRotToMe[3];
+
+	for ($counter = 0; $counter < ($size-1); $counter++)
+	{
+		string $moveItem;
+		$moveItem = $sel[$counter];
+		$curItem = `xform -q -ws -ro $sel[($counter)]`;
+		xform -ws -ro $curItem[0] $curItem[1] $alignRotToMe[2] $moveItem;
+	}
+	
+};
+
+//Align SX
+global proc alignSX() {
+    global string $sel[];
+    global int $size;
+    
+    global float $scaleArray[];
+    global float $alignScaleToMe[3];
+
+	for ($counter = 0; $counter < ($size-1); $counter++)
+	{
+		string $moveItem;
+		$moveItem = $sel[$counter];
+		setAttr ($moveItem + ".scaleX") $alignScaleToMe[0];
+	}
+	
+};
+
+//Align SY
+global proc alignSY() {
+    global string $sel[];
+    global int $size;
+
+    global float $scaleArray[];
+    global float $alignScaleToMe[3];
+
+	//Align SZ
+	for ($counter = 0; $counter < ($size-1); $counter++)
+	{
+		string $moveItem;
+		$moveItem = $sel[$counter];
+		setAttr ($moveItem + ".scaleY") $alignScaleToMe[1];
+	}
+	
+};
+
+//Align SZ
+global proc alignSZ() {
+    global string $sel[];
+    global int $size;
+    
+    global float $scaleArray[];
+    global float $alignScaleToMe[3];
+
+	for ($counter = 0; $counter < ($size-1); $counter++)
+	{
+		string $moveItem;
+		$moveItem = $sel[$counter];
+		setAttr ($moveItem + ".scaleZ") $alignScaleToMe[2];
+	}
+	
+};
+
+kwin();
